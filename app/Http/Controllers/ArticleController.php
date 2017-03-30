@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ArticleController extends Controller
 {
@@ -15,6 +16,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::all();
+
         return view('articles.index',['totos' => $articles]);
     }
 
@@ -41,16 +43,12 @@ class ArticleController extends Controller
         $extrait = $request->get('extrait');
         $contenu = $request->get('contenu');
 
-        $monArticle = new Article();
-        $monArticle->setAttribute('nom',$nom);
-        $monArticle->setAttribute('slug','');
-        $monArticle->setAttribute('extrait',$extrait);
-        $monArticle->setAttribute('contenu',$contenu);
 
-        $monArticle->save();
-        $articles = Article::all();
+        $monArticle = Article::create(['nom' => $nom,'slug'=>null,'extrait'=>$extrait,'contenu'=>$contenu]);
 
-        return view('articles.index',['totos'=> $articles]);
+        return redirect()->action(
+            'ArticleController@index'
+        );
 
     }
 
@@ -62,7 +60,25 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        //
+        $article = Article::find($id);
+        return view('articles.show',['article'=>$article]);
+    }
+
+    public function showBySlug($slug)
+    {
+        $article = Article::where('slug',$slug)->first();
+        if(isset($article->id)){
+            return view('articles.show',['article' => $article]);
+        }
+
+        else{
+            return redirect()->action(
+                'ArticleController@index'
+            );
+        }
+
+        return view ('articles.show',['article'=>$article]);
+
     }
 
     /**
@@ -75,6 +91,8 @@ class ArticleController extends Controller
     {
 
         $article = Article::findOrFail($id);
+        Session::flash('alert-class', 'alert-success');
+        Session::flash('message', 'Votre message a été édité!');
         return view('articles.edit',['article' => $article]);
 
     }
@@ -114,8 +132,21 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id,$request)
     {
-        //
+        if($request->ajax()){
+
+            dd('ajax');
+
+        }
+        else{
+            $article = Article::find($id);
+            $article->delete();
+            Session::flash('alert-class', 'alert-danger');
+            Session::flash('message', 'Votre article a été supprimé!');
+            return redirect()->action(
+                'ArticleController@index'
+         );
+        }
     }
 }

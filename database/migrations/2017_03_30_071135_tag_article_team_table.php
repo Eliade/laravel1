@@ -13,11 +13,11 @@ class TagArticleTeamTable extends Migration
      */
     public function up()
     {
-        Schema::create('tag_article', function (Blueprint $table) {
+        Schema::create('article_tag', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('article_id')->unsigned();
             $table->integer('tag_id')->unsigned();
-
+            $table->timestamps();
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
