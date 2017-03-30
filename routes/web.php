@@ -35,7 +35,7 @@ Route::get('/articles/{slug}','ArticleController@showBySlug')->name('voirBySlug'
 Route::get('/articles/delete/{id}',function(){
     return 'NON ! ';
 });
-    Route::delete('/articles/delete/{id}','ArticleController@destroy')->name('destroy');
+Route::delete('/articles/delete/{id}','ArticleController@destroy')->name('destroy');
 
 // gestion des routes Auth
 Auth::routes();

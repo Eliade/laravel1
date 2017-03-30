@@ -132,21 +132,13 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id,$request)
+    public function destroy($id)
     {
-        if($request->ajax()){
+        $article = Article::find($id);
+        $article->delete();
+        Session::flash('alert-class', 'alert-danger');
+        Session::flash('message', 'Votre article a été supprimé!');
 
-            dd('ajax');
-
-        }
-        else{
-            $article = Article::find($id);
-            $article->delete();
-            Session::flash('alert-class', 'alert-danger');
-            Session::flash('message', 'Votre article a été supprimé!');
-            return redirect()->action(
-                'ArticleController@index'
-         );
-        }
+        return redirect()->action('ArticleController@index');
     }
 }

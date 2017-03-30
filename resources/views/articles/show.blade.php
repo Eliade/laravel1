@@ -1,5 +1,5 @@
 <h1>mon article : {{$article->nom}}</h1>
-<b>contenu:</b> {{$article->contenu}}
+<b>contenu:</b> {!! $article->contenu !!}
 <br>
 <b>extrait:</b> {{$article->extrait}}
 <br>
